@@ -8,7 +8,7 @@ import { ImageBlock, VideoBlock } from "@/components/blocks/media-blocks";
 import { QuizOpenBlock } from "@/components/blocks/quiz-open-block";
 import { QuizMcqRunner } from "@/components/blocks/quiz-mcq-runner";
 import { FlashcardSetRunner } from "@/components/blocks/flashcard-set-runner";
-import { CodeExercisePlaceholder } from "@/components/blocks/runners-placeholder";
+import { CodeExerciseRunner } from "@/components/blocks/code-exercise-runner";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 
@@ -30,7 +30,7 @@ const BLOCK_RENDERERS: Record<
   quiz_open: QuizOpenBlock,
   quiz_mcq: QuizMcqRunner,
   flashcard_set: FlashcardSetRunner,
-  code_exercise: CodeExercisePlaceholder,
+  code_exercise: CodeExerciseRunner,
 };
 
 function FallbackBlock({ block }: { block: LessonBlockRow }) {
