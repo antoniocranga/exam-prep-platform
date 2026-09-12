@@ -7,10 +7,8 @@ import { ReferenceListBlock } from "@/components/blocks/reference-list-block";
 import { ImageBlock, VideoBlock } from "@/components/blocks/media-blocks";
 import { QuizOpenBlock } from "@/components/blocks/quiz-open-block";
 import { QuizMcqRunner } from "@/components/blocks/quiz-mcq-runner";
-import {
-  FlashcardSetPlaceholder,
-  CodeExercisePlaceholder,
-} from "@/components/blocks/runners-placeholder";
+import { FlashcardSetRunner } from "@/components/blocks/flashcard-set-runner";
+import { CodeExercisePlaceholder } from "@/components/blocks/runners-placeholder";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 
@@ -31,7 +29,7 @@ const BLOCK_RENDERERS: Record<
   video: VideoBlock,
   quiz_open: QuizOpenBlock,
   quiz_mcq: QuizMcqRunner,
-  flashcard_set: FlashcardSetPlaceholder,
+  flashcard_set: FlashcardSetRunner,
   code_exercise: CodeExercisePlaceholder,
 };
 
