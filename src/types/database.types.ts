@@ -31,6 +31,8 @@ export interface Database {
           order_index: number;
           description: string | null;
           created_at: string;
+          updated_at?: string;
+          metadata?: Json;
         };
         Insert: {
           id?: string;
@@ -39,6 +41,8 @@ export interface Database {
           order_index: number;
           description?: string | null;
           created_at?: string;
+          updated_at?: string;
+          metadata?: Json;
         };
         Update: {
           id?: string;
@@ -47,6 +51,8 @@ export interface Database {
           order_index?: number;
           description?: string | null;
           created_at?: string;
+          updated_at?: string;
+          metadata?: Json;
         };
       };
       lessons: {
@@ -59,6 +65,7 @@ export interface Database {
           order_index: number;
           scheduled_date: string | null;
           created_at: string;
+          updated_at?: string;
         };
         Insert: {
           id?: string;
@@ -69,6 +76,7 @@ export interface Database {
           order_index: number;
           scheduled_date?: string | null;
           created_at?: string;
+          updated_at?: string;
         };
         Update: {
           id?: string;
@@ -79,6 +87,7 @@ export interface Database {
           order_index?: number;
           scheduled_date?: string | null;
           created_at?: string;
+          updated_at?: string;
         };
       };
       lesson_blocks: {
@@ -180,3 +189,9 @@ export interface Database {
     };
   };
 }
+
+export type ModuleRow = Database["public"]["Tables"]["modules"]["Row"];
+export type LessonRow = Database["public"]["Tables"]["lessons"]["Row"];
+export type LessonBlockRow = Database["public"]["Tables"]["lesson_blocks"]["Row"];
+export type KnowledgeBaseRow = Database["public"]["Tables"]["knowledge_base"]["Row"];
+export type UserProgressRow = Database["public"]["Tables"]["user_progress"]["Row"];
