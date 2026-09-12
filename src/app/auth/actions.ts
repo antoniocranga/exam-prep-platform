@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 
 export interface AuthState {
@@ -55,10 +56,22 @@ export async function signUp(
     return { error: "Parolele introduse nu coincid." };
   }
 
+  const headersList = await headers();
+  const host = headersList.get("x-forwarded-host") || headersList.get("host");
+  const proto =
+    headersList.get("x-forwarded-proto") ||
+    (host?.includes("localhost") ? "http" : "https");
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (host ? `${proto}://${host}` : "https://exam-prep-platform-plum.vercel.app");
+
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      emailRedirectTo: `${siteUrl}/auth/callback`,
+    },
   });
 
   if (error) {
