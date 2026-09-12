@@ -6,8 +6,8 @@ import { CalloutBlock } from "@/components/blocks/callout-block";
 import { ReferenceListBlock } from "@/components/blocks/reference-list-block";
 import { ImageBlock, VideoBlock } from "@/components/blocks/media-blocks";
 import { QuizOpenBlock } from "@/components/blocks/quiz-open-block";
+import { QuizMcqRunner } from "@/components/blocks/quiz-mcq-runner";
 import {
-  QuizMcqPlaceholder,
   FlashcardSetPlaceholder,
   CodeExercisePlaceholder,
 } from "@/components/blocks/runners-placeholder";
@@ -30,7 +30,7 @@ const BLOCK_RENDERERS: Record<
   image: ImageBlock,
   video: VideoBlock,
   quiz_open: QuizOpenBlock,
-  quiz_mcq: QuizMcqPlaceholder,
+  quiz_mcq: QuizMcqRunner,
   flashcard_set: FlashcardSetPlaceholder,
   code_exercise: CodeExercisePlaceholder,
 };
