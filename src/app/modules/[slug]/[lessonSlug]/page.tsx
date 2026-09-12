@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+import { LessonBlockRenderer } from "@/components/blocks/lesson-block-renderer";
 import { ModuleRow, LessonRow, LessonBlockRow } from "@/types/database.types";
 
 export const dynamic = "force-dynamic";
@@ -161,21 +162,7 @@ export default async function LessonDetailPage({ params }: Props) {
         ) : (
           <div className="space-y-6">
             {blockList.map((block) => (
-              <Card key={block.id} className="p-6">
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <Badge variant="outline" className="text-xs uppercase tracking-wider">
-                    {block.type}
-                  </Badge>
-                  <span className="text-xs text-muted-foreground font-mono">
-                    #{block.order_index}
-                  </span>
-                </div>
-                <div className="text-sm prose dark:prose-invert max-w-none">
-                  <pre className="p-4 rounded-lg bg-muted text-xs overflow-x-auto">
-                    {JSON.stringify(block.content_json, null, 2)}
-                  </pre>
-                </div>
-              </Card>
+              <LessonBlockRenderer key={block.id} block={block} />
             ))}
           </div>
         )}
