@@ -25,18 +25,55 @@ interface QuizContent {
   description?: string;
   passing_score_pct?: number;
   questions?: McqQuestion[];
+  // Contract v1.0 single question fields:
+  question?: string;
+  options?: Array<string | { text: string; id?: string | number }>;
+  correct_option_id?: string | number;
+  explanation?: string;
+  citations?: Array<{ citation?: string; locator?: string }>;
 }
 
 export function QuizMcqRunner({ block }: { block: LessonBlockRow }) {
   const content = (block.content_json || {}) as QuizContent;
-  const questions = (content.questions || []) as McqQuestion[];
   const title = content.title || "Test Grilă de Evaluare";
   const passingScore = content.passing_score_pct ?? 70;
+
+  // Support both multi-question container (content.questions) and contract v1.0 single question payload
+  const questions: McqQuestion[] = React.useMemo(() => {
+    if (Array.isArray(content.questions) && content.questions.length > 0) {
+      return content.questions;
+    }
+    if (content.question) {
+      const rawOptions = Array.isArray(content.options) ? content.options : [];
+      const correctId = content.correct_option_id;
+      let correctIdx = 0;
+      if (correctId !== undefined) {
+        const idx = rawOptions.findIndex((opt: any) => 
+          (typeof opt === "object" && opt !== null && opt.id === correctId) || opt === correctId
+        );
+        if (idx !== -1) correctIdx = idx;
+      }
+      const citationStr = Array.isArray(content.citations) && content.citations.length > 0
+        ? content.citations[0].citation || content.citations[0].locator
+        : undefined;
+
+      return [{
+        question: content.question,
+        options: rawOptions,
+        correct_index: correctIdx,
+        correct_answer: correctId,
+        explanation: content.explanation,
+        citation: citationStr,
+      }];
+    }
+    return [];
+  }, [content]);
 
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [selectedAnswers, setSelectedAnswers] = React.useState<Record<number, number>>({});
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [syncStatus, setSyncStatus] = React.useState<string | null>(null);
+
 
   if (questions.length === 0) {
     return (

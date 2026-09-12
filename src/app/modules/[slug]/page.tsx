@@ -150,10 +150,10 @@ export default async function ModuleDetailPage({ params }: Props) {
       </nav>
 
       {/* Module Header Card */}
-      <div className="rounded-2xl border bg-card p-6 sm:p-8 mb-10 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+      <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 p-7 sm:p-9 mb-10 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="font-semibold text-xs px-2.5 py-0.5">
+            <Badge variant="outline" className="font-semibold text-xs px-3 py-1 bg-primary/10 text-primary border-primary/25 rounded-full">
               Modulul {currentModule.order_index}
             </Badge>
             <span className="text-xs text-muted-foreground">•</span>
@@ -165,9 +165,9 @@ export default async function ModuleDetailPage({ params }: Props) {
           {user && lessonList.length > 0 && (
             <Badge
               variant={completedCount === lessonList.length ? "default" : "secondary"}
-              className="text-xs gap-1"
+              className="text-xs gap-1.5 px-3 py-1 rounded-full font-medium"
             >
-              {completedCount === lessonList.length && <CheckCircle2 className="h-3 w-3" />}
+              {completedCount === lessonList.length && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />}
               <span>
                 {completedCount} / {lessonList.length} completate
               </span>
@@ -175,7 +175,7 @@ export default async function ModuleDetailPage({ params }: Props) {
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-3">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3 text-foreground">
           {currentModule.title}
         </h1>
         {currentModule.description && (
@@ -189,19 +189,19 @@ export default async function ModuleDetailPage({ params }: Props) {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold tracking-tight">Structura Lecțiilor</h2>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-muted-foreground hidden sm:inline">
             Apasă pe o lecție pentru a accesa sinteza și materialele interactive
           </span>
         </div>
 
         {lessonList.length === 0 ? (
-          <Card className="border-dashed p-8 text-center">
+          <Card className="rounded-2xl border-dashed p-8 text-center">
             <p className="text-sm text-muted-foreground">
               Nu există lecții asociate acestui modul în prezent.
             </p>
           </Card>
         ) : (
-          <div className="grid gap-3">
+          <div className="grid gap-3.5">
             {lessonList.map((lesson) => {
               const types = blocksByLesson.get(lesson.id) || [];
               const progress = progressMap.get(lesson.id);
@@ -214,36 +214,36 @@ export default async function ModuleDetailPage({ params }: Props) {
                   href={`/modules/${currentModule.slug}/${lesson.slug}`}
                   className="block group"
                 >
-                  <Card className="transition-all hover:border-foreground/30 hover:shadow-sm">
-                    <CardHeader className="p-4 sm:p-5 flex flex-row items-center justify-between gap-4">
-                      <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                  <Card className="rounded-2xl border border-border/80 transition-all duration-300 hover:border-primary/40 hover:shadow-md bg-card">
+                    <CardHeader className="p-5 flex flex-row items-center justify-between gap-4">
+                      <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-muted/70 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-300">
                           {isCompleted ? (
-                            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                            <CheckCircle2 className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                           ) : (
                             getLessonTypeIcon(lesson.type)
                           )}
                         </div>
-                        <div className="min-w-0 space-y-1">
+                        <div className="min-w-0 space-y-1.5">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-xs font-semibold text-muted-foreground">
                               Lecția {lesson.order_index}
                             </span>
                             {getLessonTypeBadge(lesson.type)}
                             {lesson.scheduled_date && (
-                              <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                              <span className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
                                 <Clock className="h-3 w-3" />
                                 {lesson.scheduled_date}
                               </span>
                             )}
                             {hasScore && (
-                              <Badge variant="secondary" className="text-[10px] font-mono">
+                              <Badge variant="secondary" className="text-[10px] font-mono px-2 py-0.5">
                                 Scor: {progress?.score}%
                               </Badge>
                             )}
                           </div>
 
-                          <CardTitle className="text-base sm:text-lg font-semibold truncate group-hover:text-primary transition-colors">
+                          <CardTitle className="text-base sm:text-lg font-bold truncate group-hover:text-primary transition-colors">
                             {lesson.title}
                           </CardTitle>
 

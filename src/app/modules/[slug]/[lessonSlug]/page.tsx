@@ -126,21 +126,21 @@ export default async function LessonDetailPage({ params }: Props) {
       </nav>
 
       {/* Lesson Header Card */}
-      <div className="rounded-2xl border bg-card p-6 sm:p-8 mb-8 shadow-sm">
+      <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 p-7 sm:p-9 mb-8 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-2 flex-wrap">
-            <Badge variant="outline" className="font-semibold text-xs">
+            <Badge variant="outline" className="font-semibold text-xs px-3 py-1 bg-primary/10 text-primary border-primary/25 rounded-full">
               Lecția {lesson.order_index}
             </Badge>
-            <Badge variant="secondary" className="capitalize text-xs">
+            <Badge variant="secondary" className="capitalize text-xs px-3 py-1 rounded-full">
               {lesson.type}
             </Badge>
             {blockList.length > 0 && (
               <>
-                <Badge variant="outline" className="text-xs text-muted-foreground">
+                <Badge variant="outline" className="text-xs text-muted-foreground rounded-full">
                   {blockList.length} {blockList.length === 1 ? "secțiune" : "secțiuni"}
                 </Badge>
-                <Badge variant="outline" className="text-xs text-muted-foreground flex items-center gap-1">
+                <Badge variant="outline" className="text-xs text-muted-foreground flex items-center gap-1 rounded-full">
                   <Clock className="h-3 w-3" />
                   <span>~{Math.max(5, blockList.length * 4)} min</span>
                 </Badge>
@@ -148,7 +148,7 @@ export default async function LessonDetailPage({ params }: Props) {
             )}
           </div>
           {lesson.scheduled_date && (
-            <span className="text-xs text-muted-foreground font-mono">
+            <span className="text-xs text-muted-foreground font-mono bg-muted/50 px-2.5 py-1 rounded-full">
               Planificat: {lesson.scheduled_date}
             </span>
           )}
@@ -156,10 +156,10 @@ export default async function LessonDetailPage({ params }: Props) {
 
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-foreground">
               {lesson.title}
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground font-medium">
               Modulul {currentModule.order_index}: {currentModule.title}
             </p>
           </div>
@@ -204,10 +204,10 @@ export default async function LessonDetailPage({ params }: Props) {
       </div>
 
       {/* Lesson Completion Action Banner */}
-      <div className="rounded-xl border bg-muted/20 p-5 sm:p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="space-y-0.5 text-center sm:text-left">
-          <h3 className="text-sm font-semibold">Ai terminat de parcurs această lecție?</h3>
-          <p className="text-xs text-muted-foreground">
+      <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-card to-primary/5 p-6 sm:p-7 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+        <div className="space-y-1 text-center sm:text-left">
+          <h3 className="text-base font-bold text-foreground">Ai terminat de parcurs această lecție?</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Marchează progresul pentru a actualiza statistica din panoul de control.
           </p>
         </div>
@@ -219,17 +219,17 @@ export default async function LessonDetailPage({ params }: Props) {
       </div>
 
       {/* Sibling Navigation Footer */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border/70">
         {prevLesson ? (
           <Link
             href={`/modules/${currentModule.slug}/${prevLesson.slug}`}
             className="w-full sm:w-auto"
           >
-            <Button variant="outline" className="w-full justify-start gap-2">
-              <ArrowLeft className="h-4 w-4" />
+            <Button variant="outline" className="w-full justify-start gap-2.5 rounded-xl h-12 px-4 hover:border-primary/40 hover:bg-muted/60 transition-all">
+              <ArrowLeft className="h-4 w-4 shrink-0 text-muted-foreground" />
               <div className="text-left truncate max-w-[200px]">
-                <div className="text-[10px] text-muted-foreground uppercase">Anterior</div>
-                <div className="text-xs truncate">{prevLesson.title}</div>
+                <div className="text-[10px] text-muted-foreground uppercase font-semibold">Anterior</div>
+                <div className="text-xs font-medium truncate">{prevLesson.title}</div>
               </div>
             </Button>
           </Link>
@@ -242,17 +242,17 @@ export default async function LessonDetailPage({ params }: Props) {
             href={`/modules/${currentModule.slug}/${nextLesson.slug}`}
             className="w-full sm:w-auto"
           >
-            <Button variant="outline" className="w-full justify-end gap-2 text-right">
+            <Button variant="outline" className="w-full justify-end gap-2.5 text-right rounded-xl h-12 px-4 hover:border-primary/40 hover:bg-muted/60 transition-all">
               <div className="text-right truncate max-w-[200px]">
-                <div className="text-[10px] text-muted-foreground uppercase">Următor</div>
-                <div className="text-xs truncate">{nextLesson.title}</div>
+                <div className="text-[10px] text-muted-foreground uppercase font-semibold">Următor</div>
+                <div className="text-xs font-medium truncate">{nextLesson.title}</div>
               </div>
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
             </Button>
           </Link>
         ) : (
           <Link href={`/modules/${currentModule.slug}`} className="w-full sm:w-auto">
-            <Button variant="outline" className="w-full gap-2">
+            <Button variant="outline" className="w-full gap-2 rounded-xl h-11 px-5">
               <Layers className="h-4 w-4" />
               <span>Înapoi la Modul</span>
             </Button>
