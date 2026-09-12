@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Metadata } from "next";
-import { ChevronRight, ArrowLeft, ArrowRight, BookOpen, Layers } from "lucide-react";
+import { ChevronRight, ArrowLeft, ArrowRight, BookOpen, Layers, Clock } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { LessonBlockRenderer } from "@/components/blocks/lesson-block-renderer";
+import { LessonBlockNavigator } from "@/components/blocks/lesson-block-navigator";
 import { LessonProgressButton } from "@/components/lesson-progress-button";
 import { getUserLessonProgress } from "@/app/actions/progress";
 import { ModuleRow, LessonRow, LessonBlockRow } from "@/types/database.types";
@@ -127,13 +128,24 @@ export default async function LessonDetailPage({ params }: Props) {
       {/* Lesson Header Card */}
       <div className="rounded-2xl border bg-card p-6 sm:p-8 mb-8 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="outline" className="font-semibold text-xs">
               Lecția {lesson.order_index}
             </Badge>
             <Badge variant="secondary" className="capitalize text-xs">
               {lesson.type}
             </Badge>
+            {blockList.length > 0 && (
+              <>
+                <Badge variant="outline" className="text-xs text-muted-foreground">
+                  {blockList.length} {blockList.length === 1 ? "secțiune" : "secțiuni"}
+                </Badge>
+                <Badge variant="outline" className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  <span>~{Math.max(5, blockList.length * 4)} min</span>
+                </Badge>
+              </>
+            )}
           </div>
           {lesson.scheduled_date && (
             <span className="text-xs text-muted-foreground font-mono">
@@ -163,6 +175,9 @@ export default async function LessonDetailPage({ params }: Props) {
         </div>
       </div>
 
+      {/* Sticky Quick-Jump Section Navigator */}
+      <LessonBlockNavigator blocks={blockList} />
+
       {/* Lesson Blocks Area */}
       <div className="space-y-6 mb-12">
         {blockList.length === 0 ? (
@@ -178,9 +193,11 @@ export default async function LessonDetailPage({ params }: Props) {
             </div>
           </Card>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {blockList.map((block) => (
-              <LessonBlockRenderer key={block.id} block={block} />
+              <div key={block.id} id={`block-${block.id}`} className="scroll-mt-28">
+                <LessonBlockRenderer block={block} />
+              </div>
             ))}
           </div>
         )}
