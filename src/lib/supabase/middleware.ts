@@ -51,7 +51,6 @@ export async function updateSession(request: NextRequest) {
   // Protect sensitive / user-specific routes
   const isProtectedRoute =
     pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/practice") ||
     pathname.startsWith("/profile");
 
   if (isProtectedRoute && !user) {

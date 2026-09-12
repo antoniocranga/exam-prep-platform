@@ -47,6 +47,7 @@ export async function recordProgress(
 
   revalidatePath("/dashboard");
   revalidatePath("/modules");
+  revalidatePath("/practice");
   return { success: true, savedToCloud: true, status, score };
 }
 
@@ -83,6 +84,7 @@ export async function toggleLessonComplete(
 
   revalidatePath("/dashboard");
   revalidatePath("/modules");
+  revalidatePath("/practice");
   return { success: true, savedToCloud: true, status: nextStatus };
 }
 
