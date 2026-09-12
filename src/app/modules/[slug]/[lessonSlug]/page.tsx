@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { LessonBlockRenderer } from "@/components/blocks/lesson-block-renderer";
+import { LessonProgressButton } from "@/components/lesson-progress-button";
+import { getUserLessonProgress } from "@/app/actions/progress";
 import { ModuleRow, LessonRow, LessonBlockRow } from "@/types/database.types";
 
 export const dynamic = "force-dynamic";
@@ -99,6 +101,9 @@ export default async function LessonDetailPage({ params }: Props) {
       ? siblings[currentIndex + 1]
       : null;
 
+  // 5. Fetch User Progress (if authenticated)
+  const userProgress = await getUserLessonProgress(lesson.id);
+
   return (
     <div className="container mx-auto px-4 sm:px-6 max-w-4xl py-10">
       {/* Breadcrumb Navigation */}
@@ -137,12 +142,25 @@ export default async function LessonDetailPage({ params }: Props) {
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
-          {lesson.title}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Modulul {currentModule.order_index}: {currentModule.title}
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
+              {lesson.title}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Modulul {currentModule.order_index}: {currentModule.title}
+            </p>
+          </div>
+
+          {/* Progress action button */}
+          <div className="shrink-0 pt-2 sm:pt-0">
+            <LessonProgressButton
+              lessonId={lesson.id}
+              initialStatus={userProgress?.status}
+              initialScore={userProgress?.score}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Lesson Blocks Area */}
@@ -166,6 +184,21 @@ export default async function LessonDetailPage({ params }: Props) {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Lesson Completion Action Banner */}
+      <div className="rounded-xl border bg-muted/20 p-5 sm:p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="space-y-0.5 text-center sm:text-left">
+          <h3 className="text-sm font-semibold">Ai terminat de parcurs această lecție?</h3>
+          <p className="text-xs text-muted-foreground">
+            Marchează progresul pentru a actualiza statistica din panoul de control.
+          </p>
+        </div>
+        <LessonProgressButton
+          lessonId={lesson.id}
+          initialStatus={userProgress?.status}
+          initialScore={userProgress?.score}
+        />
       </div>
 
       {/* Sibling Navigation Footer */}
