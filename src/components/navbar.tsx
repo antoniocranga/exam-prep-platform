@@ -121,16 +121,8 @@ export function Navbar() {
                     </Link>
                   );
                 })}
-                <div className="pt-4 border-t mt-4">
-                  <Link
-                    href="/auth/signin"
-                    onClick={() => setIsOpen(false)}
-                    className="w-full"
-                  >
-                    <Button className="w-full rounded-xl" size="sm">
-                      Autentificare
-                    </Button>
-                  </Link>
+                <div className="pt-2 border-t mt-3">
+                  <AuthNav mode="mobile" onItemClick={() => setIsOpen(false)} />
                 </div>
               </div>
             </SheetContent>

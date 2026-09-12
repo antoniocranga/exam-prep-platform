@@ -19,7 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { signOut } from "@/app/auth/actions";
+import { LogoutButton } from "@/components/auth/logout-button";
 import { ModuleRow, LessonRow, UserProgressRow } from "@/types/database.types";
 
 export const dynamic = "force-dynamic";
@@ -139,12 +139,7 @@ export default async function DashboardPage() {
           </p>
         </div>
 
-        <form action={signOut}>
-          <Button variant="outline" size="sm" className="gap-2 self-start">
-            <LogOut className="h-4 w-4" />
-            <span>Deconectare</span>
-          </Button>
-        </form>
+        <LogoutButton className="rounded-xl gap-2 self-start cursor-pointer border-border/80 hover:bg-muted" />
       </div>
 
       {/* Global Progress Overview Banner */}
