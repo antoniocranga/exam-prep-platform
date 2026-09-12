@@ -5,6 +5,7 @@ import Link from "next/link";
 import { GraduationCap, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AuthNav } from "@/components/auth-nav";
 import {
   Sheet,
   SheetContent,
@@ -52,11 +53,9 @@ export function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
 
-          <Link href="/auth/signin" className="hidden sm:inline-flex">
-            <Button variant="outline" size="sm">
-              Autentificare
-            </Button>
-          </Link>
+          <div className="hidden sm:inline-flex">
+            <AuthNav />
+          </div>
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger
