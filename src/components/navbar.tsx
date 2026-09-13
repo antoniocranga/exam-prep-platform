@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Menu, BookOpen, Layers, BarChart3, Search } from "lucide-react";
+import { GraduationCap, Menu, BookOpen, Layers, BarChart3, Search, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthNav } from "@/components/auth-nav";
@@ -23,6 +23,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/modules", label: "Module", icon: BookOpen },
     { href: "/practice", label: "Practică", icon: Layers },
+    { href: "/simulare", label: "Simulări 100p", icon: Award },
     { href: "/search", label: "Căutare RAG", icon: Search },
     { href: "/dashboard", label: "Progres", icon: BarChart3 },
   ];
@@ -30,7 +31,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-background/80 backdrop-blur-md transition-all">
       <div className="container mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <div className="flex items-center gap-6 md:gap-8">
+        <div className="flex items-center gap-5 md:gap-7">
           <Link
             href="/"
             className="flex items-center gap-2.5 font-bold tracking-tight text-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]"
@@ -45,7 +46,7 @@ export function Navbar() {
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-1.5 md:flex">
+          <nav className="hidden items-center gap-1 md:flex">
             {navLinks.map((link) => {
               const isActive =
                 pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
@@ -56,7 +57,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all select-none",
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all select-none",
                     isActive
                       ? "bg-primary/10 text-primary font-bold dark:bg-primary/20"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -77,8 +78,8 @@ export function Navbar() {
             className="hidden sm:flex items-center gap-2 h-9 px-3 rounded-full border border-border/80 bg-muted/40 hover:bg-muted text-xs text-muted-foreground hover:text-foreground transition-all select-none"
           >
             <Search className="h-3.5 w-3.5 text-primary" />
-            <span className="hidden md:inline">Caută în legislație...</span>
-            <span className="inline md:hidden">Caută</span>
+            <span className="hidden lg:inline">Caută în legislație...</span>
+            <span className="inline lg:hidden">Caută</span>
             <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-background border border-border/70 text-muted-foreground">
               ⌘K
             </kbd>
