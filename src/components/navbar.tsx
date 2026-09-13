@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Menu, Sparkles, BookOpen, Layers, BarChart3 } from "lucide-react";
+import { GraduationCap, Menu, BookOpen, Layers, BarChart3, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthNav } from "@/components/auth-nav";
@@ -23,6 +23,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/modules", label: "Module", icon: BookOpen },
     { href: "/practice", label: "Practică", icon: Layers },
+    { href: "/search", label: "Căutare RAG", icon: Search },
     { href: "/dashboard", label: "Progres", icon: BarChart3 },
   ];
 
@@ -70,6 +71,19 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Quick Search trigger button */}
+          <Link
+            href="/search"
+            className="hidden sm:flex items-center gap-2 h-9 px-3 rounded-full border border-border/80 bg-muted/40 hover:bg-muted text-xs text-muted-foreground hover:text-foreground transition-all select-none"
+          >
+            <Search className="h-3.5 w-3.5 text-primary" />
+            <span className="hidden md:inline">Caută în legislație...</span>
+            <span className="inline md:hidden">Caută</span>
+            <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-background border border-border/70 text-muted-foreground">
+              ⌘K
+            </kbd>
+          </Link>
+
           <ThemeToggle />
 
           <div className="hidden sm:inline-flex">
@@ -132,4 +146,3 @@ export function Navbar() {
     </header>
   );
 }
-
