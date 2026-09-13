@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 export interface SearchResultsListProps {
   results: RagSearchResult[];
-  query: string;
+  query?: string;
   onResultClick?: (result: RagSearchResult) => void;
   className?: string;
 }
@@ -53,7 +53,6 @@ function getCategoryStyles(category: RagSearchResult["source_category"]) {
 
 export function SearchResultsList({
   results,
-  query,
   onResultClick,
   className,
 }: SearchResultsListProps) {

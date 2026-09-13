@@ -1,62 +1,59 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Metadata } from "next";
-import { ChevronRight, ArrowLeft, ArrowRight, BookOpen, Layers, Clock } from "lucide-react";
+import { ChevronRight, ArrowLeft, ArrowRight, Layers, Clock, BookOpen, Sparkles, ArrowUpRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+import { LessonBlockRow, LessonRow, ModuleRow } from "@/types/database.types";
 import { LessonBlockRenderer } from "@/components/blocks/lesson-block-renderer";
 import { LessonBlockNavigator } from "@/components/blocks/lesson-block-navigator";
 import { LessonProgressButton } from "@/components/lesson-progress-button";
-import { getUserLessonProgress } from "@/app/actions/progress";
-import { ModuleRow, LessonRow, LessonBlockRow } from "@/types/database.types";
+import { ContextualRagContainer } from "@/components/search/contextual-rag-popover";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
 
-interface Props {
-  params: Promise<{ slug: string; lessonSlug: string }>;
+interface LessonPageProps {
+  params: Promise<{
+    slug: string;
+    lessonSlug: string;
+  }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function getUserLessonProgress(
+  lessonId: string
+): Promise<{ status: string; score: number | null } | null> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return null;
+
+    const { data } = await supabase
+      .from("user_progress")
+      .select("status, score")
+      .eq("user_id", user.id)
+      .eq("lesson_id", lessonId)
+      .maybeSingle();
+
+    return (data as { status: string; score: number | null } | null) || null;
+  } catch {
+    return null;
+  }
+}
+
+export default async function LessonPage({ params }: LessonPageProps) {
   const { slug, lessonSlug } = await params;
   const supabase = await createClient();
 
-  const { data: moduleData } = await supabase
-    .from("modules")
-    .select("id, title")
-    .eq("slug", slug)
-    .maybeSingle();
-
-  const moduleItem = moduleData as Pick<ModuleRow, "id" | "title"> | null;
-  if (!moduleItem) return { title: "Lecție negăsită — ExamPrep" };
-
-  const { data: lessonData } = await supabase
-    .from("lessons")
-    .select("title")
-    .eq("slug", lessonSlug)
-    .eq("module_id", moduleItem.id)
-    .maybeSingle();
-
-  const lesson = lessonData as Pick<LessonRow, "title"> | null;
-  if (!lesson) return { title: "Lecție negăsită — ExamPrep" };
-
-  return {
-    title: `${lesson.title} — ${moduleItem.title} — ExamPrep`,
-    description: `Studiu și recapitulare pentru ${lesson.title}.`,
-  };
-}
-
-export default async function LessonDetailPage({ params }: Props) {
-  const { slug, lessonSlug } = await params;
-  const supabase = await createClient();
-
-  // 1. Fetch Module
+  // 1. Fetch Module by slug
   const { data: moduleData, error: moduleError } = await supabase
     .from("modules")
     .select("*")
     .eq("slug", slug)
-    .maybeSingle();
+    .single();
 
   if (moduleError || !moduleData) {
     notFound();
@@ -64,13 +61,13 @@ export default async function LessonDetailPage({ params }: Props) {
 
   const currentModule = moduleData as ModuleRow;
 
-  // 2. Fetch Lesson
+  // 2. Fetch Lesson by slug and verify it belongs to this module
   const { data: lessonData, error: lessonError } = await supabase
     .from("lessons")
     .select("*")
     .eq("slug", lessonSlug)
     .eq("module_id", currentModule.id)
-    .maybeSingle();
+    .single();
 
   if (lessonError || !lessonData) {
     notFound();
@@ -178,7 +175,23 @@ export default async function LessonDetailPage({ params }: Props) {
       {/* Sticky Quick-Jump Section Navigator */}
       <LessonBlockNavigator blocks={blockList} />
 
-      {/* Lesson Blocks Area */}
+      {/* RAG Contextual Highlight Info Banner */}
+      <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-primary/5 border border-primary/15 text-xs text-muted-foreground mb-6">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+            <Sparkles className="h-3.5 w-3.5" />
+          </div>
+          <span>
+            <strong className="text-foreground">Căutare RAG Contextuală:</strong> Selectează orice text sau articol din lecție pentru a deschide automat panoul de analiză și spețe corelate.
+          </span>
+        </div>
+        <Link href="/search" className="shrink-0 text-primary font-semibold hover:underline flex items-center gap-1">
+          <span>Hub Căutare</span>
+          <ArrowUpRight className="h-3 w-3" />
+        </Link>
+      </div>
+
+      {/* Lesson Blocks Area with Contextual RAG Selection Provider */}
       <div className="space-y-6 mb-12">
         {blockList.length === 0 ? (
           <Card className="border-dashed p-10 text-center">
@@ -193,13 +206,15 @@ export default async function LessonDetailPage({ params }: Props) {
             </div>
           </Card>
         ) : (
-          <div className="space-y-8">
-            {blockList.map((block) => (
-              <div key={block.id} id={`block-${block.id}`} className="scroll-mt-28">
-                <LessonBlockRenderer block={block} />
-              </div>
-            ))}
-          </div>
+          <ContextualRagContainer>
+            <div className="space-y-8">
+              {blockList.map((block) => (
+                <div key={block.id} id={`block-${block.id}`} className="scroll-mt-28">
+                  <LessonBlockRenderer block={block} />
+                </div>
+              ))}
+            </div>
+          </ContextualRagContainer>
         )}
       </div>
 

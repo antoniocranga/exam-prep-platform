@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { Search, Sparkles, BookOpen, Scale, FileText, GraduationCap, AlertCircle, RefreshCw, Layers } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Search, Sparkles, BookOpen, Scale, FileText, GraduationCap, AlertCircle, RefreshCw } from "lucide-react";
 import { SearchBar } from "@/components/search/search-bar";
 import { SearchResultsList } from "@/components/search/search-results-list";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { performRagSearchAction } from "@/app/actions/search-actions";
 import { RagSearchResult } from "@/lib/search/rag-search";
@@ -34,7 +34,6 @@ const SUGGESTIONS = [
 
 export function SearchClient() {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const initialQuery = searchParams.get("q") || "";
   const initialFilter = searchParams.get("filter") || "all";
@@ -46,23 +45,23 @@ export function SearchClient() {
   const [hasSearched, setHasSearched] = React.useState(Boolean(initialQuery));
   const [error, setError] = React.useState<string | null>(null);
 
-  // Debounce search
+  // Debounced search effect
   React.useEffect(() => {
     const trimmed = query.trim();
 
-    if (!trimmed) {
-      setResults([]);
-      setIsLoading(false);
-      setHasSearched(false);
-      setError(null);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    setHasSearched(true);
-
     const timer = setTimeout(async () => {
+      if (!trimmed) {
+        setResults([]);
+        setIsLoading(false);
+        setHasSearched(false);
+        setError(null);
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
+      setHasSearched(true);
+
       try {
         const res = await performRagSearchAction(trimmed, filter, 30);
         if (res.error) {
@@ -70,7 +69,7 @@ export function SearchClient() {
         } else {
           setResults(res.results || []);
         }
-      } catch (err) {
+      } catch {
         setError("A apărut o problemă la conectarea cu motorul de căutare.");
       } finally {
         setIsLoading(false);
@@ -226,7 +225,7 @@ export function SearchClient() {
             </Button>
           </Card>
         ) : results.length > 0 ? (
-          <SearchResultsList results={results} query={query} />
+          <SearchResultsList results={results} />
         ) : hasSearched ? (
           <Card className="border-dashed p-10 text-center space-y-4">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-muted text-muted-foreground">

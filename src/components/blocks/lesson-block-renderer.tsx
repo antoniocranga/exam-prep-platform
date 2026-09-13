@@ -58,5 +58,13 @@ function FallbackBlock({ block }: { block: LessonBlockRow }) {
  */
 export function LessonBlockRenderer({ block }: LessonBlockRendererProps) {
   const Component = BLOCK_RENDERERS[block.type as BlockType] ?? FallbackBlock;
-  return <Component block={block} />;
+  return (
+    <div
+      className="group/block relative selection:bg-primary/25 selection:text-foreground"
+      data-block-id={block.id}
+      data-block-type={block.type}
+    >
+      <Component block={block} />
+    </div>
+  );
 }
