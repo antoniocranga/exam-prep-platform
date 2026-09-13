@@ -88,3 +88,54 @@ export async function submitMockExamAttemptAction(
     return { success: false, error: "Nu s-a putut salva rezultatul în cont." };
   }
 }
+
+export interface ExamEvaluationPayload {
+  examId: string;
+  sub1Score: number;
+  sub2Score: number;
+  sub3Score: number;
+  totalScore: number;
+  rubricScores?: Record<string, number>;
+  timeSpentSeconds?: number;
+  notes?: string;
+}
+
+export async function saveExamEvaluationAction(
+  payload: ExamEvaluationPayload
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return { success: true };
+    }
+
+    const { error: upsertErr } = await supabase.from("user_progress").upsert(
+      {
+        user_id: user.id,
+        lesson_id: payload.examId,
+        status: "completed",
+        score: payload.totalScore,
+        last_accessed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      } as never,
+      { onConflict: "user_id,lesson_id" }
+    );
+
+    if (upsertErr) {
+      console.warn("Could not upsert user_progress for mock exam evaluation:", upsertErr);
+    }
+
+    revalidatePath("/dashboard");
+    revalidatePath("/simulare");
+    revalidatePath(`/simulare/${payload.examId}`);
+    revalidatePath(`/simulare/${payload.examId}/results`);
+    return { success: true };
+  } catch (err) {
+    console.error("Error saving mock exam evaluation:", err);
+    return { success: false, error: "Nu s-a putut salva autoevaluarea în cont." };
+  }
+}

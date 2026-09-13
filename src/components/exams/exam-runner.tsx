@@ -19,7 +19,7 @@ import {
   Check,
   FileText,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -156,6 +156,26 @@ export function ExamRunner({ exam }: ExamRunnerProps) {
     const timeSpent = initialDuration - timeLeft;
     const estimatedTotal = calculatedSub1 + selfScoreSub2 + selfScoreSub3 + exam.oficiu_points;
 
+    // Save full attempt payload for diagnostic results page (/simulare/[examId]/results)
+    try {
+      const attemptPayload = {
+        examId: exam.id,
+        examSlug: exam.slug,
+        subiectul1Answers,
+        subiectul2Text,
+        subiectul3Text,
+        scoreSubiectul1: calculatedSub1,
+        totalScore: estimatedTotal,
+        timeSpentSeconds: timeSpent,
+        timestamp: Date.now(),
+      };
+      localStorage.setItem(`simulare_attempt_${exam.id}`, JSON.stringify(attemptPayload));
+      localStorage.setItem(`simulare_attempt_${exam.slug}`, JSON.stringify(attemptPayload));
+      localStorage.removeItem(draftKey);
+    } catch {
+      // ignore
+    }
+
     await submitMockExamAttemptAction({
       examId: exam.id,
       subiectul1Answers,
@@ -165,12 +185,6 @@ export function ExamRunner({ exam }: ExamRunnerProps) {
       totalScore: estimatedTotal,
       timeSpentSeconds: timeSpent,
     });
-
-    try {
-      localStorage.removeItem(draftKey);
-    } catch {
-      // ignore
-    }
   }, [exam, subiectul1Answers, initialDuration, timeLeft, selfScoreSub2, selfScoreSub3, draftKey, subiectul2Text, subiectul3Text]);
 
   const handleTimeExpired = React.useCallback(() => {
@@ -741,6 +755,26 @@ export function ExamRunner({ exam }: ExamRunnerProps) {
                     <span className="text-muted-foreground">Din Oficiu:</span>
                     <div className="font-bold text-base text-emerald-600">{exam.oficiu_points}p</div>
                   </div>
+                </div>
+
+                {/* Banner linking to full diagnostic results page */}
+                <div className="p-4 rounded-2xl bg-primary/10 border border-primary/30 flex flex-wrap items-center justify-between gap-3">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-1.5 font-bold text-sm text-foreground">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      <span>Raport Diagnostic Complet & Autoevaluare Rubrică</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Accesează evaluarea comparativă side-by-side a speței manageriale pe cele 5 criterii oficiale și profilul pe domenii.
+                    </p>
+                  </div>
+                  <Link
+                    href={`/simulare/${exam.slug}/results`}
+                    className={cn(buttonVariants({ size: "default" }), "rounded-xl font-bold text-xs gap-1.5 shadow-xs bg-primary text-primary-foreground hover:bg-primary/90")}
+                  >
+                    <span>Deschide Raportul Diagnostic</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                 </div>
               </Card>
 
